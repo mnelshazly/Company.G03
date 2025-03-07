@@ -12,10 +12,11 @@ namespace Company.G03.BLL.Repositories
     public class DepartmentRepository : IDepartmentRepository
     {
         private readonly CompanyDbContext _context;
-        
-        public DepartmentRepository()
+
+        // Ask CLR to create object from CompanyDbContext
+        public DepartmentRepository(CompanyDbContext context)
         {
-            _context = new CompanyDbContext();
+            _context = context;
         }
 
         public IEnumerable<Department> GetAll()
