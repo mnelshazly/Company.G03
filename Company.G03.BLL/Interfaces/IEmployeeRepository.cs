@@ -7,16 +7,16 @@ using Company.G03.DAL.Models;
 
 namespace Company.G03.BLL.Interfaces
 {
-    public interface IEmployeeRepository
+    public interface IEmployeeRepository : IGenericRepository<Employee>
     {
-        IEnumerable<Employee> GetAll();
+        //IEnumerable<Employee> GetAll();
 
-        Employee? Get(int id);
+        //Employee? Get(int id);
 
-        int Add(Employee employee);
+        //int Add(Employee employee);
 
-        int Update(Employee employee);
+        //int Update(Employee employee);
 
-        int Delete(Employee employee);
+        //int Delete(Employee employee);
     }
 }
