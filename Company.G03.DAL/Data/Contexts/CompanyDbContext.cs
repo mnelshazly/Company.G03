@@ -14,7 +14,7 @@ namespace Company.G03.DAL.Data.Contexts
         // CLR 
         public CompanyDbContext(DbContextOptions<CompanyDbContext> options) : base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,5 +30,6 @@ namespace Company.G03.DAL.Data.Contexts
         //}
 
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }
