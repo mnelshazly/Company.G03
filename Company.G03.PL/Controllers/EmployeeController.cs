@@ -72,16 +72,51 @@ namespace Company.G03.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            return Details(id, "Edit");
+            if (id is null) return BadRequest("Invalid Id"); //400
+
+            var employee = _employeeRepository.Get(id.Value);
+
+            if (employee is null) return NotFound(new { StatusCode = 404, message = $"Department with Id: {id} was not found" });
+
+            var employeeDto = new CreateEmployeeDto()
+            {
+                Name = employee.Name,
+                Address = employee.Address,
+                Age = employee.Age,
+                Email = employee.Email,
+                Phone = employee.Phone,
+                Salary = employee.Salary,
+                IsActive = employee.IsActive,
+                IsDeleted = employee.IsDeleted,
+                HiringDate = employee.HiringDate,
+                CreateAt = employee.CreateAt,
+            };
+
+            return View(employeeDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Employee employee)
+        public IActionResult Edit([FromRoute] int id, CreateEmployeeDto model)
         {
             if (ModelState.IsValid)
             {
-                if (id != employee.Id) return BadRequest();
+                //if (id != employee.Id) return BadRequest();
+                var employee = new Employee()
+                {
+                    Id = id,
+                    Name = model.Name,
+                    Address = model.Address,
+                    Age = model.Age,
+                    Email = model.Email,
+                    Phone = model.Phone,
+                    Salary = model.Salary,
+                    IsActive = model.IsActive,
+                    IsDeleted = model.IsDeleted,
+                    HiringDate = model.HiringDate,
+                    CreateAt = model.CreateAt,
+                };
+
                 var count = _employeeRepository.Update(employee);
 
                 if (count > 0)
@@ -90,7 +125,7 @@ namespace Company.G03.PL.Controllers
                 }
             }
 
-            return View(employee);
+            return View(model);
         }
 
         [HttpGet]
