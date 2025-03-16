@@ -6,15 +6,20 @@ using System.Threading.Tasks;
 using Company.G03.BLL.Interfaces;
 using Company.G03.DAL.Data.Contexts;
 using Company.G03.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Company.G03.BLL.Repositories
 {
     public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
+        private readonly CompanyDbContext _context;
+
         public EmployeeRepository(CompanyDbContext context) : base(context)
         {
-
+            _context = context;
         }
+
+
 
         //private readonly CompanyDbContext _context;
 
