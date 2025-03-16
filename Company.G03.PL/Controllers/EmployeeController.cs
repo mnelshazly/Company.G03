@@ -18,9 +18,18 @@ namespace Company.G03.PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string? SearchInput)
         {
-            var employee = _employeeRepository.GetAll();
+            IEnumerable<Employee> employees;
+
+            if (string.IsNullOrEmpty(SearchInput))
+            {
+                employees = _employeeRepository.GetAll();
+            } else
+            {
+                employees = _employeeRepository.GetByName(SearchInput);
+            }
+
             // Dictionary: 3 Properties
             
             // 1. ViewData: Transfer Extra Information From Controller (Action) to View
@@ -33,7 +42,7 @@ namespace Company.G03.PL.Controllers
 
 
 
-            return View(employee);
+            return View(employees);
         }
 
         [HttpGet]
