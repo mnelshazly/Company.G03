@@ -9,10 +9,12 @@ namespace Company.G03.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IDepartmentRepository _departmentRepository;
 
-        public EmployeeController(IEmployeeRepository employeeRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository)
         {
             _employeeRepository = employeeRepository;
+            _departmentRepository = departmentRepository;
         }
 
         [HttpGet]
@@ -37,6 +39,8 @@ namespace Company.G03.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            var departments = _departmentRepository.GetAll();
+            ViewData["departments"] = departments;
             return View();
         }
 
@@ -58,6 +62,7 @@ namespace Company.G03.PL.Controllers
                     IsDeleted = model.IsDeleted,
                     HiringDate = model.HiringDate,
                     CreateAt = model.CreateAt,
+                    DepartmentId = model.DepartmentId,
                 };
                 var count = _employeeRepository.Add(employee);
                 if (count > 0)
@@ -85,6 +90,9 @@ namespace Company.G03.PL.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
+            var departments = _departmentRepository.GetAll();
+            ViewData["departments"] = departments;
+
             if (id is null) return BadRequest("Invalid Id"); //400
 
             var employee = _employeeRepository.Get(id.Value);
@@ -103,6 +111,7 @@ namespace Company.G03.PL.Controllers
                 IsDeleted = employee.IsDeleted,
                 HiringDate = employee.HiringDate,
                 CreateAt = employee.CreateAt,
+                DepartmentId = employee.DepartmentId,
             };
 
             return View(employeeDto);
@@ -128,6 +137,7 @@ namespace Company.G03.PL.Controllers
                     IsDeleted = model.IsDeleted,
                     HiringDate = model.HiringDate,
                     CreateAt = model.CreateAt,
+                    DepartmentId = model.DepartmentId,
                 };
 
                 var count = _employeeRepository.Update(employee);

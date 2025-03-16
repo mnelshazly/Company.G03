@@ -31,5 +31,7 @@ namespace Company.G03.PL.Dtos
 
         [DisplayName("Date Of Creation")]
         public DateTime CreateAt { get; set; }
+        [DisplayName("Department")]
+        public int? DepartmentId { get; set; }
     }
 }
