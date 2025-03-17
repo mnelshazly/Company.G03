@@ -1,6 +1,7 @@
 using Company.G03.BLL.Interfaces;
 using Company.G03.BLL.Repositories;
 using Company.G03.DAL.Data.Contexts;
+using Company.G03.PL.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.G03.PL
@@ -19,6 +20,19 @@ namespace Company.G03.PL
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             }); // Allow DI for CompanyDbContext
+
+            #region DI Example
+
+            // Life time
+            // builder.Services.AddScoped();    // Create Object (Life Time Per Request) - Unreachable Object
+            // builder.Services.AddTransient(); // Create Object (Life Time Per Operation)
+            // builder.Services.AddSingleton(); // Create Object (Life Time Per App) 
+
+            builder.Services.AddScoped<IScopedService, ScopedService>(); // Per Request
+            builder.Services.AddTransient<ITransientService, TransientService>(); // Per Operation
+            builder.Services.AddSingleton<ISingletonService, SingletonService>(); // Per App
+
+            #endregion
 
             var app = builder.Build();
 
