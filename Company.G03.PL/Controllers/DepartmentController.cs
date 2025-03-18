@@ -106,6 +106,8 @@ namespace Company.G03.PL.Controllers
 
                 var department = _mapper.Map<Department>(model);
 
+                department.Id = id;
+
                 var count = _departmentRepository.Update(department);
 
                 if (count > 0)
