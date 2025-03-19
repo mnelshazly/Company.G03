@@ -217,6 +217,18 @@ namespace Company.G03.PL.Controllers
                 //    DepartmentId = model.DepartmentId,
                 //};
 
+                if (model.ImageName is not null && model.Image is not null)
+                {
+                    DocumentSettings.DeleteFile(model.ImageName, "images");
+                }
+
+                if (model.Image is not null)
+                {
+                    model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
+
+                }
+
+
                 var employee = _mapper.Map<Employee>(model);
                 employee.Id = id;
 
@@ -279,6 +291,10 @@ namespace Company.G03.PL.Controllers
 
                 if (count > 0)
                 {
+                    if (model.ImageName is not null)
+                    {
+                        DocumentSettings.DeleteFile(model.ImageName, "images");
+                    }
                     return RedirectToAction(nameof(Index));
                 }
             }
