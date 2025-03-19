@@ -3,6 +3,7 @@ using Company.G03.BLL.Interfaces;
 using Company.G03.BLL.Repositories;
 using Company.G03.DAL.Models;
 using Company.G03.PL.Dtos;
+using Company.G03.PL.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.G03.PL.Controllers
@@ -52,8 +53,6 @@ namespace Company.G03.PL.Controllers
 
             // 3. TempData
 
-
-
             return View(employees);
         }
 
@@ -85,6 +84,13 @@ namespace Company.G03.PL.Controllers
                 //    CreateAt = model.CreateAt,
                 //    DepartmentId = model.DepartmentId,
                 //};
+
+                if (model.Image is not null)
+                {
+                    model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
+
+                }
+
                 var employee = _mapper.Map<Employee>(model);
                 _unitOfWork.EmployeeRepository.Add(employee);
                 var count = _unitOfWork.Complete();
