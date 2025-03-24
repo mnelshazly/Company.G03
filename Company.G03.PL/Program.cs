@@ -1,8 +1,10 @@
 using Company.G03.BLL.Interfaces;
 using Company.G03.BLL.Repositories;
 using Company.G03.DAL.Data.Contexts;
+using Company.G03.DAL.Models;
 using Company.G03.PL.Mapping;
 using Company.G03.PL.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Company.G03.PL
@@ -39,6 +41,9 @@ namespace Company.G03.PL
             builder.Services.AddSingleton<ISingletonService, SingletonService>(); // Per App
 
             #endregion
+
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+                            .AddEntityFrameworkStores<CompanyDbContext>();
 
             var app = builder.Build();
 
