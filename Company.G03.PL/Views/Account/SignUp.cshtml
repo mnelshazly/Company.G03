@@ -8,15 +8,15 @@
 <div class="main-agileinfo">
 	<div class="agileits-top">
 
-		<div asp-validation-summary="All" class="my-3 alert alert-danger"></div>
+		<div asp-validation-summary="All" class="my-3 text-danger"></div>
 
 		<form asp-action="SignUp">
-			<input class="text" asp-for="UserName" placeholder="Username" required="">
-			<input class="text" asp-for="FirstName" placeholder="First Name" required="">
-			<input class="text" asp-for="LastName" placeholder="Last Name" required="">
-			<input class="text email" asp-for="Email" placeholder="Email" required="">
-			<input class="text" asp-for="Password" placeholder="Password" required="">
-			<input class="text w3lpass" asp-for="ConfirmPassword" placeholder="Confirm Password" required="">
+			<input class="text my-4" asp-for="UserName" placeholder="Username" required="">
+			<input class="text my-4" asp-for="FirstName" placeholder="First Name" required="">
+			<input class="text my-4" asp-for="LastName" placeholder="Last Name" required="">
+			<input class="text email my-4" asp-for="Email" placeholder="Email" required="">
+			<input class="text my-4" asp-for="Password" placeholder="Password" required="">
+			<input class="text w3lpass my-4" asp-for="ConfirmPassword" placeholder="Confirm Password" required="">
 			<div class="wthree-text">
 				<label class="anim">
 					<input asp-for="IsAgree" class="checkbox" required="">
@@ -26,7 +26,7 @@
 			</div>
 			<input type="submit" value="SIGNUP">
 		</form>
-		<p>Don't have an Account? <a asp-action="SignIn"> Login Now!</a></p>
+		<p>Already have an Account? <a asp-action="SignIn"> Login Now!</a></p>
 	</div>
 </div>
 
