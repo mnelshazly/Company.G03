@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Text;
 using Company.G03.PL.Models;
 using Company.G03.PL.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.G03.PL.Controllers
