@@ -161,12 +161,20 @@ namespace Company.G03.PL.Controllers
                     if (flag)
                     {
                         // Check Your Inbox
+
+                        return RedirectToAction("CheckYourInbox");
                     }
                 }
             }
 
             ModelState.AddModelError("", "Invalid Reset Password Operation !!");
             return View("ForgetPassword", model);
+        }
+
+        [HttpGet]
+        public IActionResult CheckYourInbox()
+        {
+            return View();
         }
 
         #endregion
