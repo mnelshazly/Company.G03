@@ -1,5 +1,6 @@
 ﻿using Company.G03.DAL.Models;
 using Company.G03.PL.Dtos;
+using Company.G03.PL.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -119,6 +120,53 @@ namespace Company.G03.PL.Controllers
             await _signInManager.SignOutAsync();
 
             return RedirectToAction(nameof(SignIn));
+        }
+
+        #endregion
+
+        #region Forget Password
+
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordDto model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user is not null)
+                {
+                    // Generate Token
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    // Create URL
+                    var url = Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
+
+                    // Create Email
+                    var email = new Email()
+                    {
+                        To = model.Email,
+                        Subject = "Reset Password",
+                        Body = url
+                    };
+                    // Send Email
+                    var flag = EmailSettings.SendEmail(email);
+
+                    if (flag)
+                    {
+                        // Check Your Inbox
+                    }
+                }
+            }
+
+            ModelState.AddModelError("", "Invalid Reset Password Operation !!");
+            return View("ForgetPassword", model);
         }
 
         #endregion
