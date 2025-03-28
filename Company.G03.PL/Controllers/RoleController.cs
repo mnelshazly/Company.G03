@@ -60,14 +60,14 @@ namespace Company.G03.PL.Controllers
             {
                 var role = await _roleManager.FindByNameAsync(model.Name);
 
-                if(role is null)
+                if (role is null)
                 {
                     role = new IdentityRole()
                     {
                         Name = model.Name,
                     };
                     var result = await _roleManager.CreateAsync(role);
-                    if(result.Succeeded)
+                    if (result.Succeeded)
                     {
                         return RedirectToAction("Index");
                     }
@@ -120,7 +120,7 @@ namespace Company.G03.PL.Controllers
                 if (roleResult is null)
                 {
                     role.Name = model.Name;
-                    
+
                     var result = await _roleManager.UpdateAsync(role);
 
                     if (result.Succeeded)
@@ -175,6 +175,8 @@ namespace Company.G03.PL.Controllers
 
             if (role is null) return NotFound();
 
+            ViewData["RoleId"] = roleId;
+
             var usersInRole = new List<UsersInRoleDto>();
             var users = await _userManager.Users.ToListAsync();
 
@@ -186,10 +188,11 @@ namespace Company.G03.PL.Controllers
                     UserName = user.UserName
                 };
 
-                if(await _userManager.IsInRoleAsync(user, role.Name))
+                if (await _userManager.IsInRoleAsync(user, role.Name))
                 {
                     userInRole.IsSelected = true;
-                } else
+                }
+                else
                 {
                     userInRole.IsSelected = false;
                 }
@@ -198,6 +201,41 @@ namespace Company.G03.PL.Controllers
             }
 
             return View(usersInRole);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddOrRemoveUsers(string roleId, List<UsersInRoleDto> users)
+        {
+
+            var role = await _roleManager.FindByIdAsync(roleId);
+
+            if (role is null) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                foreach (var user in users)
+                {
+                    var appUser = await _userManager.FindByIdAsync(user.UserId);
+
+                    if(appUser is not null)
+                    {
+                        if (user.IsSelected && !await _userManager.IsInRoleAsync(appUser, role.Name))
+                        {
+                           await _userManager.AddToRoleAsync(appUser, role.Name);
+
+                        }
+                        else if (!user.IsSelected && await _userManager.IsInRoleAsync(appUser, role.Name))
+                        {
+                            await _userManager.RemoveFromRoleAsync(appUser, role.Name);
+                        }
+                    }
+
+                }
+
+                return RedirectToAction(nameof(Edit), new {id = roleId});
+            }
+
+            return View(users);
         }
     }
 }
