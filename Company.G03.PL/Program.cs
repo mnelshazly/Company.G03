@@ -2,8 +2,10 @@ using Company.G03.BLL.Interfaces;
 using Company.G03.BLL.Repositories;
 using Company.G03.DAL.Data.Contexts;
 using Company.G03.DAL.Models;
+using Company.G03.PL.Helpers;
 using Company.G03.PL.Mapping;
 using Company.G03.PL.Services;
+using Company.G03.PL.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,6 +52,10 @@ namespace Company.G03.PL
             {
                 config.LoginPath = "/Account/SignIn";
             });
+
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+
+            builder.Services.AddScoped<IMailService, MailService>();
 
             var app = builder.Build();
 
