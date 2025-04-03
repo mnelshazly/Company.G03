@@ -98,3 +98,18 @@ else
 	</div>
 }
 
+<script>
+	const SearchBar = $('#SearchInput');
+	const table = $('table');
+	SearchBar.on('keyup', function(event){
+		var searchValue = SearchBar.val();
+		$.ajax({
+			url: '/Employee/Search',
+			type: 'Get',
+			data: {SearchInput:searchValue},
+			success: function(result) {table.html(result)},
+			error: function(xhr, status,error) {console.log(error)}
+		});
+	});
+</script>
+

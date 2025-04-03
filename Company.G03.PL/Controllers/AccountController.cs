@@ -11,12 +11,14 @@ namespace Company.G03.PL.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IMailService _mailService;
+        private readonly ITwilioService _twilioService;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMailService mailService)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMailService mailService, ITwilioService twilioService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _mailService = mailService;
+            _twilioService = twilioService;
         }
 
         // P@ssW0rd
@@ -179,8 +181,50 @@ namespace Company.G03.PL.Controllers
             return View("ForgetPassword", model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordSms(ForgetPasswordDto model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user is not null)
+                {
+                    // Generate Token
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    // Create URL
+                    var url = Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
+
+                    // Create SMS
+                    var sms = new Sms()
+                    {
+                        To = user.PhoneNumber,
+                        Body = url
+                    };
+
+                    _twilioService.SendSms(sms);
+
+                    return RedirectToAction("CheckYourPhone");
+
+                }
+            }
+
+            ModelState.AddModelError("", "Invalid Reset Password Operation !!");
+            return View("ForgetPassword", model);
+        }
+
+
+
         [HttpGet]
         public IActionResult CheckYourInbox()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult CheckYourPhone()
         {
             return View();
         }
@@ -221,6 +265,15 @@ namespace Company.G03.PL.Controllers
             }
 
             return View(model);
+        }
+
+        #endregion
+
+        #region AccessDenied
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
 
         #endregion
