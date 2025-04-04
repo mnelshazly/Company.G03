@@ -1,11 +1,13 @@
 ﻿using Company.G03.DAL.Models;
 using Company.G03.PL.Dtos;
 using Company.G03.PL.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Company.G03.PL.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -46,6 +48,22 @@ namespace Company.G03.PL.Controllers
             }
 
             return View(users);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string? SearchInput)
+        {
+            var users = _userManager.Users.Select(U => new UserToReturnDto()
+            {
+                Id = U.Id,
+                UserName = U.UserName,
+                Email = U.Email,
+                FirstName = U.FirstName,
+                LastName = U.LastName,
+                Roles = _userManager.GetRolesAsync(U).Result
+            }).Where(U => U.FirstName.ToLower().Contains(SearchInput.ToLower()));
+
+            return PartialView("UserPartialView/UsersTablePartialView", users);
         }
 
 

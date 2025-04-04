@@ -59,6 +59,14 @@ namespace Company.G03.PL.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Search(string? SearchInput)
+        {
+            var employees = await _unitOfWork.EmployeeRepository.GetByNameAsync(SearchInput);
+
+            return PartialView("EmployeePartialView/EmployeesTablePartialView", employees);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             var departments = await _unitOfWork.DepartmentRepository.GetAllAsync();
@@ -164,6 +172,7 @@ namespace Company.G03.PL.Controllers
         //}
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id, string viewName = "Edit")
         {
             if (id is null) return BadRequest("Invalid Id"); //400
@@ -252,6 +261,7 @@ namespace Company.G03.PL.Controllers
         //}
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAsync(int? id)
         {
             return await Edit(id, "Delete");

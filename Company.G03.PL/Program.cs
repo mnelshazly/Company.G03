@@ -57,6 +57,10 @@ namespace Company.G03.PL
 
             builder.Services.AddScoped<IMailService, MailService>();
 
+            builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection(nameof(TwilioSettings)));
+
+            builder.Services.AddScoped<ITwilioService, TwilioService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

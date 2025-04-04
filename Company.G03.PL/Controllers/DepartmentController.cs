@@ -73,6 +73,7 @@ namespace Company.G03.PL.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null) return BadRequest("Invalid Id"); //400
@@ -152,6 +153,7 @@ namespace Company.G03.PL.Controllers
         //}
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             //if (id is null) return BadRequest("Invalid Id"); //400
