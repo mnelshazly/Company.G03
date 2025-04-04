@@ -1,8 +1,11 @@
 ﻿using Company.G03.DAL.Models;
 using Company.G03.PL.Dtos;
 using Company.G03.PL.Helpers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.Cmp;
 
 namespace Company.G03.PL.Controllers
 {
@@ -274,6 +277,35 @@ namespace Company.G03.PL.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        #endregion
+
+        #region Google Login
+
+        public IActionResult GoogleLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("GoogleResponse")
+            };
+            return Challenge(prop, GoogleDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(
+                    claim => new
+                    {
+                        claim.Type,
+                        claim.Value,
+                        claim.Issuer,
+                        claim.OriginalIssuer,
+                    }
+                );
+
+            return RedirectToAction("Index", "Home");
         }
 
         #endregion

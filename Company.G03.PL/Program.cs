@@ -6,6 +6,7 @@ using Company.G03.PL.Helpers;
 using Company.G03.PL.Mapping;
 using Company.G03.PL.Services;
 using Company.G03.PL.Settings;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,6 +61,15 @@ namespace Company.G03.PL
             builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection(nameof(TwilioSettings)));
 
             builder.Services.AddScoped<ITwilioService, TwilioService>();
+
+            builder.Services.AddAuthentication(O =>
+            {
+                O.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                O.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            }).AddGoogle( O => {
+                O.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                O.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            });
 
             var app = builder.Build();
 
