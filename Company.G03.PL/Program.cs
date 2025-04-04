@@ -6,10 +6,12 @@ using Company.G03.PL.Helpers;
 using Company.G03.PL.Mapping;
 using Company.G03.PL.Services;
 using Company.G03.PL.Settings;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Company.G03.PL
 {
@@ -63,25 +65,35 @@ namespace Company.G03.PL
 
             builder.Services.AddScoped<ITwilioService, TwilioService>();
 
-            builder.Services.AddAuthentication(O =>
-            {
-                O.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-                O.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            }).AddGoogle( O => {
-                O.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-                O.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-            });
+            //builder.Services.AddAuthentication(O =>
+            //{
+            //    O.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+            //    O.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //}).AddGoogle(O =>
+            //{
+            //    O.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+            //    O.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            //});
 
-            builder.Services.AddAuthentication(O =>
-            {
-                O.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
-                O.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
-            }).AddFacebook(O => {
-                O.ClientId = builder.Configuration["Authentication:Facebook:ClientId"];
-                O.ClientSecret = builder.Configuration["Authentication:Facebook:ClientSecret"];
-            });
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.LoginPath = "/Account/SignIn";
+                    options.ExpireTimeSpan = TimeSpan.FromDays(3);
+                    options.AccessDeniedPath = "/Home/Error";
+                }).AddGoogle(options =>
+                {
+                    IConfiguration GoogleAuthSection = builder.Configuration.GetSection("Authentication").GetSection("Google");
+                    options.ClientId = GoogleAuthSection["ClientId"];
+                    options.ClientSecret = GoogleAuthSection["ClientSecret"];
 
-            var app = builder.Build();
+                }).AddFacebook(options => {
+                    IConfiguration FacebookAuthSection = builder.Configuration.GetSection("Authentication").GetSection("Facebook");
+                    options.ClientId = FacebookAuthSection["ClientId"];
+                    options.ClientSecret = FacebookAuthSection["ClientSecret"];
+                }); ;
+
+            var app = builder.Build(); 
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

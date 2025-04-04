@@ -282,7 +282,7 @@ namespace Company.G03.PL.Controllers
 
         #endregion
 
-        #region Google Login
+         #region Google Login
 
         public IActionResult GoogleLogin()
         {
