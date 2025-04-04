@@ -6,6 +6,7 @@ using Company.G03.PL.Helpers;
 using Company.G03.PL.Mapping;
 using Company.G03.PL.Services;
 using Company.G03.PL.Settings;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -69,6 +70,15 @@ namespace Company.G03.PL
             }).AddGoogle( O => {
                 O.ClientId = builder.Configuration["Authentication:Google:ClientId"];
                 O.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            });
+
+            builder.Services.AddAuthentication(O =>
+            {
+                O.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
+                O.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+            }).AddFacebook(O => {
+                O.ClientId = builder.Configuration["Authentication:Facebook:ClientId"];
+                O.ClientSecret = builder.Configuration["Authentication:Facebook:ClientSecret"];
             });
 
             var app = builder.Build();

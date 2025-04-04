@@ -2,6 +2,7 @@
 using Company.G03.PL.Dtos;
 using Company.G03.PL.Helpers;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -295,6 +296,35 @@ namespace Company.G03.PL.Controllers
         public async Task<IActionResult> GoogleResponse()
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(
+                    claim => new
+                    {
+                        claim.Type,
+                        claim.Value,
+                        claim.Issuer,
+                        claim.OriginalIssuer,
+                    }
+                );
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        #endregion
+
+        #region Facebook Login
+
+        public IActionResult FacebookLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("FacebookResponse")
+            };
+            return Challenge(prop, FacebookDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> FacebookResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
             var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(
                     claim => new
                     {
