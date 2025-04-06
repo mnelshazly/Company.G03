@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Company.G03.PL.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -219,11 +219,11 @@ namespace Company.G03.PL.Controllers
                 {
                     var appUser = await _userManager.FindByIdAsync(user.UserId);
 
-                    if(appUser is not null)
+                    if (appUser is not null)
                     {
                         if (user.IsSelected && !await _userManager.IsInRoleAsync(appUser, role.Name))
                         {
-                           await _userManager.AddToRoleAsync(appUser, role.Name);
+                            await _userManager.AddToRoleAsync(appUser, role.Name);
 
                         }
                         else if (!user.IsSelected && await _userManager.IsInRoleAsync(appUser, role.Name))
@@ -234,7 +234,7 @@ namespace Company.G03.PL.Controllers
 
                 }
 
-                return RedirectToAction(nameof(Edit), new {id = roleId});
+                return RedirectToAction(nameof(Edit), new { id = roleId });
             }
 
             return View(users);

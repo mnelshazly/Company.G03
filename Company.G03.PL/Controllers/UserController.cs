@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Company.G03.PL.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -124,6 +124,7 @@ namespace Company.G03.PL.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAsync(string? id)
         {
             return await Details(id, "Delete");
